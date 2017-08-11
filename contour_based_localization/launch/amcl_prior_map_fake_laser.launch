@@ -1,0 +1,45 @@
+<launch>
+    <arg name="map_file" default="$(find contour_based_localization)/maps/map_static.yaml"/>
+    <arg name="resolution" default="0.0125" />    
+    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+
+    <node pkg="tf" type="static_transform_publisher" name="laser_to_base_tf" args="0 0 0 0 0 0 base_frame contours_scan_link 50" />
+
+    <node pkg="contour_based_localization" type="contours_laserscan_generator.py" name="contours_laserscan_generator" output="screen" >
+    	<remap from="/camera/color/image_raw" to="/bebop/image_raw" />
+    	<remap from="center_of_scan" to="/com" />    	
+    	<param name="laser_scale_factor" value="$(arg resolution)" />
+    	<param name="image_fps" value="30" />
+    </node>
+
+    <node pkg="contour_based_localization" type="publish_initial_pose.py" name="initialpose_publisher" output="screen" />
+
+    <node pkg="laser_scan_matcher" type="laser_scan_matcher_node" name="laser_scan_matcher" >
+        <remap from="scan" to="contours_scan" />
+        <param name="fixed_frame" value="odom" />
+        <param name="base_frame" value="base_frame" />
+        <param name="use_imu" value="false" />
+        <param name="use_odom" value="false" />
+    </node>
+
+    <node pkg="amcl" type="amcl" name="amcl">
+        <remap from="scan" to="contours_scan" />
+        <param name="odom_frame_id" value="odom" />
+        <param name="base_frame_id" value="base_frame" />
+        <param name="global_frame_id" value="map" />
+        <param name="use_map_topic" value="false" />
+
+        <param name="odom_model_type" value="omni-corrected" />
+        <param name="odom_alpha1" value="0.005"/>
+        <param name="odom_alpha2" value="0.005"/>
+        <param name="odom_alpha3" value="0.010"/>
+        <param name="odom_alpha4" value="0.005"/>
+        <param name="odom_alpha5" value="0.003"/>        
+    </node>
+
+    <node pkg="rosservice" type="rosservice" name="global_loc" args="call --wait /global_localization"/>
+
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find contour_based_localization)/config/amcl.rviz" />
+
+    <node pkg="rosbag" type="record" name="record_bag" args="/com /pose2D /amcl_pose /particlecloud -O /home/cear/bags/amcl_bag.bag" />
+</launch>
