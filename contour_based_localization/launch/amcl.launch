@@ -1,0 +1,24 @@
+<launch>
+    <arg name="map_file" default="$(find contour_based_localization)/maps/map_canopies.yaml"/>
+    <!--<arg name="map_file" default="$(find contour_based_localization)/maps/map_trunks.yaml"/>-->
+    <arg name="resolution" default="0.0125" />
+
+    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+
+    <include file="$(find contour_based_localization)/launch/include/contours_laserscan_generator.launch" >
+        <arg name="resolution" value="$(arg resolution)" />
+    </include>
+
+    <include file="$(find contour_based_localization)/launch/include/amcl_with_laser_only.launch" >
+        <arg name="scan_topic" value="contours_scan" />
+    </include>
+
+    <node pkg="contour_based_localization" type="publish_initial_pose.py" name="initialpose_publisher" output="screen" >
+        <remap from="/camera/image_raw" to="/bebop/image_raw" />
+        <param name="resolution" value="$(arg resolution)" />
+    </node>
+
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find contour_based_localization)/config/amcl.rviz" />
+
+    <node pkg="rosbag" type="record" name="record_bag" args="/pose /scanmatcher_pose /amcl_pose /particlecloud -O /home/cear/bags/amcl_bag.bag" />
+</launch>

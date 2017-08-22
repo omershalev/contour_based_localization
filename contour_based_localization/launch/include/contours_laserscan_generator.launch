@@ -1,0 +1,13 @@
+<launch>
+    <arg name="resolution" />
+    <arg name="image_topic" default="/bebop/image_raw" />
+    <arg name="center_of_scan_topic" default="/pose" />
+    <arg name="image_topic_fps" default="30" />
+    <node pkg="tf" type="static_transform_publisher" name="laser_to_base_tf" args="0 0 0 0 0 0 base_link contours_scan_link 50" />
+    <node pkg="contour_based_localization" type="contours_laserscan_generator.py" name="contours_laserscan_generator" output="screen" >
+        <remap from="/camera/image_raw" to="$(arg image_topic)" />
+        <remap from="center_of_scan" to="$(arg center_of_scan_topic)" />
+        <param name="laser_scale_factor" value="$(arg resolution)" />
+        <param name="image_fps" value="$(arg image_topic_fps)" />
+    </node>
+</launch>

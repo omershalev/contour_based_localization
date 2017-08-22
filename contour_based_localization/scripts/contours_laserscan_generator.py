@@ -5,8 +5,7 @@ import numpy as np
 from cv_bridge import CvBridge, CvBridgeError
 import rospy
 from sensor_msgs.msg import Image, LaserScan
-from geometry_msgs.msg import Pose2D, PoseStamped
-from std_msgs.msg import Bool
+from geometry_msgs.msg import Pose2D
 
 class ContoursLaserScanGenerator(object):
     def __init__ (self):
@@ -35,7 +34,7 @@ class ContoursLaserScanGenerator(object):
         self.downsample_count = 0
         self.first_image_received = False
 
-        rospy.Subscriber('/camera/color/image_raw', Image, self.image_raw_callback)
+        rospy.Subscriber('/camera/image_raw', Image, self.image_raw_callback)
         rospy.Subscriber('/center_of_scan', Pose2D, self.center_of_scan_callback)
         self.laser_scan_pub = rospy.Publisher('contours_scan', LaserScan, queue_size=10)
         self.analyzed_image_pub = rospy.Publisher('analyzed_image', Image, queue_size=10)

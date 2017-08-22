@@ -1,5 +1,5 @@
 free_thresh: 0.1
-image: map_static.pgm
+image: map_canopies.pgm
 negate: 1
 occupied_thresh: 0.9
 origin: [0.0, 0.0, 0.0]
