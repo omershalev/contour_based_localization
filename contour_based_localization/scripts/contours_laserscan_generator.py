@@ -85,10 +85,7 @@ class ContoursLaserScanGenerator(object):
 
         center_of_scan_in_roi_x = int(center_of_scan.x - x_roi_range[0])
         center_of_scan_in_roi_y = int(center_of_scan.y - y_roi_range[0])
-        # TODO: need to change to be at the center of ROI ???
-
         scan_index = 0
-
         cv2.circle(analyzed_image,(center_of_scan_in_roi_x, center_of_scan_in_roi_y), radius=3, color=(255,0,255), thickness=2)
         laser_scan_ranges = np.full(self.laser_samples_number, np.nan)
         for theta in np.linspace(self.laser_min_angle, self.laser_max_angle, num=self.laser_samples_number):
@@ -99,7 +96,7 @@ class ContoursLaserScanGenerator(object):
                     break                    
                 try:
                     if mask[py,px] == 255:
-                        laser_scan_ranges[scan_index] = (np.sqrt((center_of_scan_in_roi_y-px)**2 + (center_of_scan_in_roi_y-py)**2)) * self.laser_scale_factor
+                        laser_scan_ranges[scan_index] = (np.sqrt((center_of_scan_in_roi_x-px)**2 + (center_of_scan_in_roi_y-py)**2)) * self.laser_scale_factor
                         cv2.circle(analyzed_image,(int(px),int(py)), radius=3, color=(255,255,0), thickness=2)
                         break
                 except IndexError, e:
