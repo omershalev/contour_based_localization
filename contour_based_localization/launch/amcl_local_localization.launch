@@ -15,6 +15,7 @@
 
     <node pkg="contour_based_localization" type="publish_initial_pose.py" name="initialpose_publisher" output="screen" >
         <remap from="/camera/image_raw" to="/bebop/image_raw" />
+        <remap from="/pose" to="/pose" />
         <param name="resolution" value="$(arg resolution)" />
     </node>
 
