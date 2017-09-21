@@ -13,6 +13,7 @@ class ContoursLaserScanGenerator(object):
 
         self.laser_scale_factor = float(rospy.get_param('~laser_scale_factor'))
         self.image_fps = int(rospy.get_param('~image_fps'))
+        self.scan_frame_id = rospy.get_param('~scan_frame_id', 'contours_scan_link')
         self.downsample_rate = int(rospy.get_param('~downsample_rate', 2))
         self.laser_samples_number = int(rospy.get_param('~laser_samples_number', 400))
         self.laser_radius = float(rospy.get_param('~laser_radius_pixels', 150))
@@ -75,7 +76,7 @@ class ContoursLaserScanGenerator(object):
 
         laser_scan = LaserScan()
         laser_scan.header.stamp = rospy.rostime.Time.now()
-        laser_scan.header.frame_id = 'contours_scan_link'
+        laser_scan.header.frame_id = self.scan_frame_id
         laser_scan.angle_min = self.laser_min_angle
         laser_scan.angle_max = self.laser_max_angle
         laser_scan.angle_increment = (self.laser_max_angle - self.laser_min_angle) / self.laser_samples_number

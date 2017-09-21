@@ -1,0 +1,32 @@
+<launch>
+
+    <arg name="resolution" default="0.0125" />
+    <arg name="image_topic" default="/bebop/image_raw" />
+    <arg name="apply_icp" default="true" />
+    <arg name="ns" default="" />
+    <arg name="map_file" default="$(find contour_based_localization)/maps/map_canopies.yaml" />
+    <arg name="standalone" default="true" />
+
+    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" >
+        <param name="frame_id" value="$(arg ns)/map" />
+    </node>
+
+    <include file="$(find contour_based_localization)/launch/include/contours_laserscan_generator.launch" >
+        <arg name="resolution" value="$(arg resolution)" />
+        <arg name="image_topic" value="$(arg image_topic)" />
+        <arg name="ns" value="$(arg ns)" />
+    </include>
+
+    <include file="$(find contour_based_localization)/launch/include/amcl_core.launch" >
+        <arg name="scan_topic" value="contours_scan" />
+        <arg name="apply_icp" value="$(arg apply_icp)" />
+        <arg name="ns" value="$(arg ns)" />
+    </include>
+
+    <arg name="global_localization_service_name" value="/global_localization" if="$(arg standalone)" />
+    <arg name="global_localization_service_name" value="/$(arg ns)/global_localization" unless="$(arg standalone)" />
+    <node pkg="rosservice" type="rosservice" name="global_loc" args="call --wait $(arg global_localization_service_name)" />
+
+    <node if="$(arg standalone)" pkg="rviz" type="rviz" name="rviz" args="-d $(find contour_based_localization)/config/amcl.rviz" />
+
+</launch>

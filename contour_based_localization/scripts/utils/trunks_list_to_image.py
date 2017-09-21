@@ -6,7 +6,7 @@ WIDTH = 856
 HEIGHT = 480
 SCALE_FACTOR = 0.0125
 
-TRUNK_RADIUS = 10
+TRUNK_RADIUS = 7
 BACKGROUND_COLOR = (9, 59, 125)
 TRUNK_COLOR = (0,147,54)
 
@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
     for line in f.read().splitlines():
         x, y = line.split(' ')
-        r = TRUNK_RADIUS + random.uniform(0, 5)
+        r = TRUNK_RADIUS + random.uniform(0, 3)
         cv2.circle(trunks_image, (int(x),int(y)), radius=int(r), color=TRUNK_COLOR, thickness=-1)
         cv2.circle(trunks_image, (int(x),int(y)), radius=int(r), color=TRUNK_COLOR, thickness=3)
 

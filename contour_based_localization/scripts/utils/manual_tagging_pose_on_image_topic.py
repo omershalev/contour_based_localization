@@ -3,7 +3,7 @@ import rosbag
 from cv_bridge import CvBridge, CvBridgeError
 from geometry_msgs.msg import Pose2D
 
-INPUT_BAG_FILE = r'/home/cear/data/bebop_top_view_1/static_image.bag'
+INPUT_BAG_FILE = r'/home/cear/data/bebop_top_view_1/canopies_300_messages.bag'
 OUTPUT_BAG_FILE = r'/home/cear/data/bebop_top_view_1/pose.bag'
 IMAGE_TOPIC = r'/bebop/image_raw'
 POSE_TOPIC = r'/pose'

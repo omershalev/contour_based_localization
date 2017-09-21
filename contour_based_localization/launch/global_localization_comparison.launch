@@ -1,0 +1,39 @@
+<launch>
+    <arg name="resolution" default="0.0125" />
+
+    <arg name="canopies_ns" default="canopies" />
+    <arg name="canopies_map_file" default="$(find contour_based_localization)/maps/map_canopies.yaml" />
+    <arg name="trunks_ns" default="trunks" />
+    <arg name="trunks_map_file" default="$(find contour_based_localization)/maps/map_trunks.yaml" />
+
+    <group ns="$(arg canopies_ns)">
+        <include file="$(find contour_based_localization)/launch/global_localization.launch" >
+            <arg name="resolution" value="$(arg resolution)" />
+            <arg name="image_topic" value="/bebop/image_raw" />
+            <arg name="ns" value="$(arg canopies_ns)" />
+            <arg name="map_file" value="$(arg canopies_map_file)" />
+            <arg name="standalone" value="false" />
+        </include>
+        <node pkg="tf" type="static_transform_publisher" name="map_to_world_tf" args="0 0 0 0 0 0 world $(arg canopies_ns)/map 50" />
+    </group>
+
+    <group ns="$(arg trunks_ns)">
+        <include file="$(find contour_based_localization)/launch/global_localization.launch" >
+            <arg name="resolution" value="$(arg resolution)" />
+            <arg name="image_topic" value="/estimated_trunks" />
+            <arg name="apply_icp" value="false" />
+            <arg name="ns" value="$(arg trunks_ns)" />
+            <arg name="map_file" value="$(arg trunks_map_file)" />
+            <arg name="standalone" value="false" />
+        </include>
+        <node pkg="contour_based_localization" type="odom_to_base_ground_truth_publisher.py" name="odom_to_base_tf_publisher" >
+            <param name="resolution" value="$(arg resolution)" />
+            <param name="base_frame_id" value="$(arg trunks_ns)/base_link" />
+            <param name="odom_frame_id" value="$(arg trunks_ns)/odom" />
+        </node>
+        <node pkg="tf" type="static_transform_publisher" name="map_to_world_tf" args="0 0 0 0 0 0 world $(arg trunks_ns)/map 50" />
+    </group>
+
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find contour_based_localization)/config/amcl_comparison.rviz" />
+
+</launch>
