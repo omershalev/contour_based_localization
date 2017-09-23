@@ -10,9 +10,10 @@ TRUNK_RADIUS = 7
 BACKGROUND_COLOR = (9, 59, 125)
 TRUNK_COLOR = (0,147,54)
 
-TRUNKS_LIST = r'/home/cear/data/bebop_top_view_1/trunk_locations'
+TRUNKS_LIST = r'/home/cear/data/bebop_top_view_1/trunk_locations_homogenous'
 OUT_IMAGE_PATH = r'/home/cear/data/bebop_top_view_1/image.png'
 
+RANDOM = False
 
 if __name__ == '__main__':
 
@@ -22,7 +23,10 @@ if __name__ == '__main__':
 
     for line in f.read().splitlines():
         x, y = line.split(' ')
-        r = TRUNK_RADIUS + random.uniform(0, 3)
+        if RANDOM:
+            r = TRUNK_RADIUS + random.uniform(0, 3)
+        else:
+            r = TRUNK_RADIUS
         cv2.circle(trunks_image, (int(x),int(y)), radius=int(r), color=TRUNK_COLOR, thickness=-1)
         cv2.circle(trunks_image, (int(x),int(y)), radius=int(r), color=TRUNK_COLOR, thickness=3)
 

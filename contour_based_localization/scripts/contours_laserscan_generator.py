@@ -16,7 +16,7 @@ class ContoursLaserScanGenerator(object):
         self.scan_frame_id = rospy.get_param('~scan_frame_id', 'contours_scan_link')
         self.downsample_rate = int(rospy.get_param('~downsample_rate', 2))
         self.laser_samples_number = int(rospy.get_param('~laser_samples_number', 400))
-        self.laser_radius = float(rospy.get_param('~laser_radius_pixels', 150))
+        self.laser_radius = float(rospy.get_param('~laser_radius_pixels', 175))
         self.laser_min_range = float(rospy.get_param('~laser_min_range_pixels', 20))
         self.laser_min_angle = float(rospy.get_param('~laser_min_angle_radians', -np.pi))
         self.laser_max_angle = float(rospy.get_param('~laser_max_angle_radians', np.pi))
