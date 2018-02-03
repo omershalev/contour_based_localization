@@ -3,10 +3,12 @@ import rosbag
 from cv_bridge import CvBridge, CvBridgeError
 from geometry_msgs.msg import Pose2D
 
-INPUT_BAG_FILE = r'/home/cear/data/bebop_top_view_1/canopies_300_messages.bag'
-OUTPUT_BAG_FILE = r'/home/cear/data/bebop_top_view_1/pose.bag'
+INPUT_BAG_FILE = r'/home/cear/data/panorama_extended_2/canopies_800_messages.bag'
+OUTPUT_BAG_FILE = r'/home/cear/data/panorama_extended_2/pose.bag'
 IMAGE_TOPIC = r'/bebop/image_raw'
 POSE_TOPIC = r'/pose'
+IMAGE_PATH = r'/home/cear/data/panorama_extended_2/maps/map_canopies.pgm'
+STATIC_IMAGE = True
 
 class ManualTaggingPose(object):
     def __init__(self):
@@ -29,16 +31,20 @@ class ManualTaggingPose(object):
             print 'frame_number = ' + str(frame_number)
             frame_number += 1
             try:
-                self.image = self.bridge.imgmsg_to_cv2(msg, 'bgr8')
+                if STATIC_IMAGE:
+                    self.image = cv2.imread(IMAGE_PATH)
+                else:
+                    self.image = self.bridge.imgmsg_to_cv2(msg, 'bgr8')
             except CvBridgeError, e:
                 print(e)
             clone = self.image.copy()
 
-            cv2.namedWindow('image')
-            cv2.setMouseCallback('image', self.mouse_callback)
+            cv2.namedWindow(str(frame_number), cv2.WINDOW_NORMAL)
+            cv2.resizeWindow(str(frame_number), 1920, 1080)
+            cv2.setMouseCallback(str(frame_number), self.mouse_callback)
 
             while True:
-                cv2.imshow('image', self.image)
+                cv2.imshow(str(frame_number), self.image)
                 key = cv2.waitKey(1) & 0xFF
 
                 # if the 'r' key is pressed, reset the displayed image
