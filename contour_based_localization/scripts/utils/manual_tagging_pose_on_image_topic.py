@@ -3,11 +3,11 @@ import rosbag
 from cv_bridge import CvBridge, CvBridgeError
 from geometry_msgs.msg import Pose2D
 
-INPUT_BAG_FILE = r'/home/cear/data/panorama_extended_2/canopies_800_messages.bag'
-OUTPUT_BAG_FILE = r'/home/cear/data/panorama_extended_2/pose.bag'
+INPUT_BAG_FILE = r'/home/cear/data/panorama_extended_16/canopies_800_messages.bag'
+OUTPUT_BAG_FILE = r'/home/cear/data/panorama_extended_16/pose.bag'
 IMAGE_TOPIC = r'/bebop/image_raw'
 POSE_TOPIC = r'/pose'
-IMAGE_PATH = r'/home/cear/data/panorama_extended_2/maps/map_canopies.pgm'
+IMAGE_PATH = r'/home/cear/data/panorama_extended_16/maps/map_canopies.pgm'
 STATIC_IMAGE = True
 
 class ManualTaggingPose(object):

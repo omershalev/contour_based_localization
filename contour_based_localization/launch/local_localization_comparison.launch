@@ -4,8 +4,8 @@
     <arg name="canopies_ns" default="canopies" />
     <arg name="canopies_map_file" default="$(find contour_based_localization)/maps/map_canopies.yaml" />
     <arg name="trunks_ns" default="trunks" />
-    <!--<arg name="trunks_map_file" default="$(find contour_based_localization)/maps/map_trunks.yaml" />-->
-    <arg name="trunks_map_file" default="$(find contour_based_localization)/maps/map_trunks_homogenous.yaml" />
+    <arg name="trunks_map_file" default="$(find contour_based_localization)/maps/map_trunks.yaml" />
+    <!--<arg name="trunks_map_file" default="$(find contour_based_localization)/maps/map_trunks_homogenous.yaml" />-->
 
     <group ns="$(arg canopies_ns)">
         <include file="$(find contour_based_localization)/launch/local_localization.launch" >

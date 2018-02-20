@@ -11,5 +11,7 @@
         <param name="laser_scale_factor" value="$(arg resolution)" />
         <param name="image_fps" value="$(arg image_topic_fps)" />
         <param name="scan_frame_id" value="$(arg ns)/contours_scan_link" />
+        <param name="laser_radius_pixels" value="230" />
+        <!--<param name="laser_samples_number" value="500" />-->
     </node>
 </launch>

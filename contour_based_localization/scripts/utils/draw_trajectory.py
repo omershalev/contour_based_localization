@@ -3,6 +3,7 @@ import rosbag
 import os
 
 IMAGE_PATH = r'/home/cear/data/panorama_extended_16/canopies_extended.jpg'
+IMAGE_PATH = r'/home/cear/data/panorama_extended_16/canopies_photoshopped_extended.jpg'
 # IMAGE_PATH = r'/home/cear/data/panorama_extended_16/maps/map_canopies.pgm'
 
 POSE_BAG_PATH_1 = r'/home/cear/data/panorama_extended_16/fork/pose.bag'

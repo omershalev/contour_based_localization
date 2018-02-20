@@ -1,6 +1,6 @@
 import cv2
 
-IMAGE_PATH = r'/home/cear/data/bebop_top_view_1/canopies.png'
+IMAGE_PATH = r'/home/cear/data/panorama_extended_2/maps/map_canopies.pgm'
 
 def mouse_callback(event, x, y, flags, param):
     if event == cv2.EVENT_LBUTTONDOWN:

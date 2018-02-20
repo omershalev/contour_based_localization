@@ -11,10 +11,12 @@ COLOR_UPPER_VAL_PERCENT = 100
 
 SCALE_FACTOR = 0.0125
 
-# IMAGE_PATH = r'/home/cear/data/bebop_top_view_1/snapshot.png'
-IMAGE_PATH = r'/home/cear/data/bebop_top_view_1/trunks.png'
-PGM_PATH = r'/home/cear/contour_localization_ws/src/contour_based_localization/contour_based_localization/maps/map.pgm'
-YAML_PATH = r'/home/cear/contour_localization_ws/src/contour_based_localization/contour_based_localization/maps/map.yaml'
+# IMAGE_PATH = r'/home/cear/data/panorama_extended_2/canopies_extended.jpg'
+# PGM_PATH = r'/home/cear/data/panorama_extended_2/maps/map_canopies.pgm'
+# YAML_PATH = r'/home/cear/data/panorama_extended_2/maps/map_canopies.yaml'
+IMAGE_PATH = r'/home/cear/data/panorama_extended_2/trunks.png'
+PGM_PATH = r'/home/cear/data/panorama_extended_2/maps/map_trunks.pgm'
+YAML_PATH = r'/home/cear/data/panorama_extended_2/maps/map_trunks.yaml'
 
 
 if __name__ == '__main__':

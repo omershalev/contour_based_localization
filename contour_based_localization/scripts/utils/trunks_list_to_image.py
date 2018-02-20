@@ -2,18 +2,31 @@ import cv2
 import numpy as np
 import random
 
-WIDTH = 856
-HEIGHT = 480
 SCALE_FACTOR = 0.0125
 
-TRUNK_RADIUS = 7
+### bebop image ###
+# WIDTH = 856
+# HEIGHT = 480
+# TRUNK_RADIUS = 7
+
+### panorama 1 ###
+# WIDTH = 848
+# HEIGHT = 796
+# TRUNK_RADIUS = 10
+
+### panorama extended 2 ###
+WIDTH = 1131
+HEIGHT = 1061
+TRUNK_RADIUS = 10
+
+
 BACKGROUND_COLOR = (9, 59, 125)
 TRUNK_COLOR = (0,147,54)
 
-TRUNKS_LIST = r'/home/cear/data/bebop_top_view_1/trunk_locations_homogenous'
-OUT_IMAGE_PATH = r'/home/cear/data/bebop_top_view_1/image.png'
+TRUNKS_LIST = r'/home/cear/data/panorama_extended_2/trunk_locations'
+OUT_IMAGE_PATH = r'/home/cear/data/panorama_extended_2/trunks.png'
 
-RANDOM = False
+RANDOM = True
 
 if __name__ == '__main__':
 

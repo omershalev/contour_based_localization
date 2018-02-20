@@ -7,15 +7,15 @@ import sys
 import rospy
 import numpy as np
 
-# IMAGE_PATH = r'/home/cear/data/bebop_top_view_1/canopies.png'
-# BAG_FILE = r'/home/cear/data/bebop_top_view_1/canopies_800_messages.bag'
-IMAGE_PATH = r'/home/cear/data/bebop_top_view_1/trunks.png'
-BAG_FILE = r'/home/cear/data/bebop_top_view_1/trunks_800_messages.bag'
+# IMAGE_PATH = r'/home/cear/data/panorama_extended_2/canopies_extended.jpg'
+# BAG_FILE = r'/home/cear/data/panorama_extended_2/canopies_800_messages.bag'
+IMAGE_PATH = r'/home/cear/data/panorama_extended_2/trunks.png'
+BAG_FILE = r'/home/cear/data/panorama_extended_2/trunks_800_messages.bag'
 NUM_OF_MESSAGES = 800
 FPS = 30
 FRAME_ID = '/bebop/camera_optical'
-TOPIC = '/bebop/image_raw'
-# TOPIC = '/estimated_trunks'
+# TOPIC = '/bebop/image_raw'
+TOPIC = '/estimated_trunks'
 
 if __name__ == '__main__':
     rospy.init_node('image_to_topic')

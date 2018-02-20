@@ -3,16 +3,44 @@ import numpy as np
 import matplotlib.pyplot as plt
 from collections import namedtuple
 from numpy.linalg import norm
+import pickle
 
 Measurement = namedtuple('Measurement', ['data', 'timestamp'])
 
-BAG_FILES_PATHS = [r'/home/cear/data/bebop_top_view_1/dynamic_pose_8_800_messages/results_1.bag',
-             r'/home/cear/data/bebop_top_view_1/dynamic_pose_8_800_messages/results_2.bag',
-             r'/home/cear/data/bebop_top_view_1/dynamic_pose_8_800_messages/results_3.bag',
-             r'/home/cear/data/bebop_top_view_1/dynamic_pose_8_800_messages/results_4.bag',
-             r'/home/cear/data/bebop_top_view_1/dynamic_pose_8_800_messages/results_5.bag']
+BAG_FILES_PATHS = [
+                    r'/home/cear/data/panorama_extended_16/snake/results/results_snake_1.bag',
+                    r'/home/cear/data/panorama_extended_16/snake/results/results_snake_2.bag',
+                    r'/home/cear/data/panorama_extended_16/snake/results/results_snake_3.bag',
+                    r'/home/cear/data/panorama_extended_16/snake/results/results_snake_4.bag',
+                    r'/home/cear/data/panorama_extended_16/snake/results/results_snake_5.bag',
+                    r'/home/cear/data/panorama_extended_16/snake/results/results_snake_6.bag',
+                    r'/home/cear/data/panorama_extended_16/snake/results/results_snake_7.bag',
+                    r'/home/cear/data/panorama_extended_16/snake/results/results_snake_8.bag',
+                    r'/home/cear/data/panorama_extended_16/snake/results/results_snake_9.bag',
+                    r'/home/cear/data/panorama_extended_16/snake/results/results_snake_10.bag'
+                  ]
+
+# BAG_FILES_PATHS = [
+#                     r'/home/cear/data/panorama_extended_16/random_walk/results/results_random_1.bag',
+#                     r'/home/cear/data/panorama_extended_16/random_walk/results/results_random_2.bag',
+#                     r'/home/cear/data/panorama_extended_16/random_walk/results/results_random_3.bag',
+#                     r'/home/cear/data/panorama_extended_16/random_walk/results/results_random_4.bag',
+#                     r'/home/cear/data/panorama_extended_16/random_walk/results/results_random_5.bag',
+#                     r'/home/cear/data/panorama_extended_16/random_walk/results/results_random_6.bag',
+#                     r'/home/cear/data/panorama_extended_16/random_walk/results/results_random_7.bag',
+#                     r'/home/cear/data/panorama_extended_16/random_walk/results/results_random_8.bag',
+#                     r'/home/cear/data/panorama_extended_16/random_walk/results/results_random_9.bag',
+#                     r'/home/cear/data/panorama_extended_16/random_walk/results/results_random_10.bag'
+#                   ]
+
+
 RESOLUTION = 0.0125
-NUM_OF_SAMPLES = 8
+NUM_OF_SAMPLES = 12
+HEIGHT = 1061
+
+MAX_ACCURACY = 12.3498662066
+MAX_PRECISON = 24.1811485685
+MAX_RMS = 56487.172363
 
 
 def find_closest_measurement(measurements, timestamp):
@@ -34,15 +62,19 @@ def vector_from_topic(bag, topic_name):
     return [Measurement(msg, t) for _, msg, t in bag.read_messages(topics=[topic_name])]
 
 def accuracy(measurement, ground_truth):
-    return np.sqrt((measurement.data.pose.pose.position.x - ground_truth.data.x * RESOLUTION) ** 2 + (measurement.data.pose.pose.position.y - ground_truth.data.y * RESOLUTION) ** 2)
+    result =  np.sqrt((measurement.data.pose.pose.position.x - ground_truth.data.x * RESOLUTION) ** 2 + (measurement.data.pose.pose.position.y - (HEIGHT - ground_truth.data.y) * RESOLUTION) ** 2)
+    normalized_result = result / MAX_ACCURACY
+    return normalized_result
 
 def precision(measurement):
-    return norm(np.array(measurement.data.pose.covariance).reshape(6, 6))
-    # TODO: which norm should we take?
-    # TODO: should we ignore theta?
+    result = norm(np.array(measurement.data.pose.covariance).reshape(6, 6))
+    normalized_result = result / MAX_PRECISON
+    return normalized_result
 
 def rms(measurement, ground_truth):
-    return sum([np.sqrt((particle.position.x - ground_truth.data.x * RESOLUTION) ** 2 + (particle.position.y - ground_truth.data.y * RESOLUTION) ** 2) for particle in measurement.data.poses])
+    result = sum([np.sqrt((particle.position.x - ground_truth.data.x * RESOLUTION) ** 2 + (particle.position.y - (HEIGHT - ground_truth.data.y) * RESOLUTION) ** 2) for particle in measurement.data.poses])
+    normalized_result = result / MAX_RMS
+    return normalized_result
 
 def aggregate_experiments(results):
     means = []
@@ -53,15 +85,14 @@ def aggregate_experiments(results):
         stds.append(np.std([results[bag_index][sample_index] for bag_index in range(num_of_experiments)]))
     return means, stds
 
-def plot_canopies_against_trunks(title, ylabel, canopies_means, canopies_stds, trunks_means, trunks_stds):
-    fig = plt.figure()
-    fig.suptitle(title)
-    plt.xlabel('waypoint #')
-    plt.ylabel(ylabel)
+def plot_canopies_against_trunks(title, canopies_means, canopies_stds, trunks_means, trunks_stds):
+    plt.figure()
+    # plt.xlabel('waypoint number')
     plt.errorbar(range(1, NUM_OF_SAMPLES+1), canopies_means, yerr=canopies_stds, color='g')
-    plt.errorbar(range(1, NUM_OF_SAMPLES+1), trunks_means, yerr=trunks_stds, color='r')
+    trunks_eb = plt.errorbar(range(1, NUM_OF_SAMPLES+1), trunks_means, yerr=trunks_stds, color='r', ls='--')
+    trunks_eb[-1][0].set_linestyle('--')
     plt.xlim((0.8, NUM_OF_SAMPLES+0.2))
-    plt.legend(['canopies', 'trunks'], fontsize='small')
+    plt.tight_layout()
     plt.savefig('/home/cear/Pictures/' + title + '.png')
 
 
@@ -122,8 +153,23 @@ if __name__ == '__main__':
     trunks_rms_means, trunks_rms_stds = aggregate_experiments(trunks_rms)
 
     # Plot
-    plot_canopies_against_trunks('Accuracy', 'error', canopies_accuracy_means, canopies_accuracy_stds, trunks_accuracy_means, trunks_accuracy_stds)
-    plot_canopies_against_trunks('Precision', 'norm of covariance matrix', canopies_precision_means, canopies_precision_stds, trunks_precision_means, trunks_precision_stds)
-    plot_canopies_against_trunks('Robustness', 'particle cloud RMS', canopies_rms_means, canopies_rms_stds, trunks_rms_means, trunks_rms_stds)
+    plot_canopies_against_trunks('Accuracy', canopies_accuracy_means, canopies_accuracy_stds, trunks_accuracy_means, trunks_accuracy_stds)
+    plot_canopies_against_trunks('Precision', canopies_precision_means, canopies_precision_stds, trunks_precision_means, trunks_precision_stds)
+    plot_canopies_against_trunks('Robustness', canopies_rms_means, canopies_rms_stds, trunks_rms_means, trunks_rms_stds)
+
+    pickle_obj = {'canopies_accuracy_means' : canopies_accuracy_means,
+                  'canopies_accuracy_stds' : canopies_accuracy_stds,
+                  'trunks_accuracy_means' : trunks_accuracy_means,
+                  'trunks_accuracy_stds' : trunks_accuracy_stds,
+                  'canopies_precision_means' : canopies_precision_means,
+                  'canopies_precision_stds' : canopies_precision_stds,
+                  'trunks_precision_means' : trunks_precision_means,
+                  'trunks_precision_stds' : trunks_precision_stds,
+                  'canopies_rms_means' : canopies_rms_means,
+                  'canopies_rms_stds' : canopies_rms_stds,
+                  'trunks_rms_means' : trunks_rms_means,
+                  'trunks_rms_stds' : trunks_rms_stds}
+    pickle.dump(pickle_obj, open('/home/cear/Pictures/graphs.pkl', 'wb'))
+
 
     print 'End of analysis'

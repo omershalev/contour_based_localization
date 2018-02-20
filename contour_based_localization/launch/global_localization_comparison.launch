@@ -2,10 +2,9 @@
     <arg name="resolution" default="0.0125" />
 
     <arg name="canopies_ns" default="canopies" />
-    <arg name="canopies_map_file" default="$(find contour_based_localization)/maps/map_canopies.yaml" />
+    <arg name="canopies_map_file" default="/home/cear/data/panorama_extended_16/maps/map_canopies.yaml" />
     <arg name="trunks_ns" default="trunks" />
-    <!--<arg name="trunks_map_file" default="$(find contour_based_localization)/maps/map_trunks.yaml" />-->
-    <arg name="trunks_map_file" default="$(find contour_based_localization)/maps/map_trunks_homogenous.yaml" />
+    <arg name="trunks_map_file" default="/home/cear/data/panorama_extended_16/maps/map_trunks.yaml" />
 
     <group ns="$(arg canopies_ns)">
         <include file="$(find contour_based_localization)/launch/global_localization.launch" >
@@ -30,5 +29,7 @@
     </group>
 
     <node pkg="rviz" type="rviz" name="rviz" args="-d $(find contour_based_localization)/config/amcl_comparison.rviz" />
-
+    <node pkg="rosbag" type="record" name="bag_recorder" args="/pose
+                                                               /canopies/particlecloud /canopies/amcl_pose /canopies/scanmatcher_pose
+                                                               /trunks/particlecloud /trunks/amcl_pose /trunks/scanmatcher_pose -O results.bag" />
 </launch>
